@@ -1,0 +1,50 @@
+{
+  "collections": {
+    "users": {
+      "document": {
+        "fields": {
+          "email": "string",
+          "displayName": "string",
+          "photoURL": "string",
+          "role": "string",
+          "zikrCount": "number",
+          "searchHistory": "array",
+          "createdAt": "timestamp"
+        }
+      },
+      "rules": {
+        "read": "request.auth != null && (request.auth.uid == id || get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role == 'admin')",
+        "create": "request.auth != null && request.auth.uid == id",
+        "update": "request.auth != null && request.auth.uid == id",
+        "delete": "false"
+      }
+    },
+    "mosques": {
+      "document": {
+        "fields": {
+          "name": "string",
+          "arabicName": "string",
+          "address": "string",
+          "city": "string",
+          "lat": "number",
+          "lng": "number",
+          "coverImage": "string",
+          "prayerTimes": "map",
+          "muazzinName": "string",
+          "muazzinPhone": "string",
+          "adminName": "string",
+          "adminPhone": "string",
+          "status": "string",
+          "createdAt": "timestamp",
+          "createdBy": "string"
+        }
+      },
+      "rules": {
+        "read": "resource.data.status == 'approved' || (request.auth != null && get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role == 'admin')",
+        "create": "request.auth != null && request.resource.data.status == 'pending'",
+        "update": "request.auth != null && get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role == 'admin'",
+        "delete": "request.auth != null && get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role == 'admin'"
+      }
+    }
+  }
+}

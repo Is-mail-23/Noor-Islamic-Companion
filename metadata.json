@@ -1,0 +1,6 @@
+{
+  "name": "Noor - Islamic Companion & Masjid Locator",
+  "description": "Muslim companion app with interactive mosque locator map, prayer times, mosque admin management portal, swipe tasbeeh zikr counter, sunrise/sunset, and duas.",
+  "requestFramePermissions": ["geolocation"],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}

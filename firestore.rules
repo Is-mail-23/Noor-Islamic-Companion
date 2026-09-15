@@ -1,0 +1,27 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    
+    function isAdmin() {
+      return request.auth != null && get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role == 'admin';
+    }
+
+    match /users/{userId} {
+      allow read: if request.auth != null && (request.auth.uid == userId || isAdmin());
+      allow create: if request.auth != null && request.auth.uid == userId;
+      allow update: if request.auth != null && request.auth.uid == userId;
+      allow delete: if false;
+    }
+
+    match /mosques/{mosqueId} {
+      // Anyone can read approved mosques. Admins can read all (including pending requests)
+      allow read: if resource.data.status == 'approved' || isAdmin();
+      
+      // Any authenticated user can submit a pending mosque, admins can create directly as approved
+      allow create: if request.auth != null && (request.resource.data.status == 'pending' || isAdmin());
+      
+      // Only admins can update or delete mosques (e.g. approving or editing them)
+      allow update, delete: if isAdmin();
+    }
+  }
+}
